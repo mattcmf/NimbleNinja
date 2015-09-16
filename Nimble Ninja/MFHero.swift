@@ -18,8 +18,15 @@ class MFHero:SKSpriteNode{
     var isUpsideDown = false
     
     init(){
-        super.init(texture: nil, color: UIColor.clearColor(),size: CGSizeMake(32,44))
-
+        let size = CGSizeMake(32, 44)
+        super.init(texture: nil, color: UIColor.clearColor(),size: size)
+        
+        loadAppearance()
+        loadPhysicsBodyWithSize(size)
+        
+    }
+    
+    func loadAppearance(){
         body = SKSpriteNode(color: UIColor.blackColor(), size: CGSizeMake(self.frame.size.width,44))
         body.position = CGPointMake(0, 2)
         addChild(body)
@@ -66,7 +73,14 @@ class MFHero:SKSpriteNode{
         rightfoot = leftfoot.copy() as!  SKSpriteNode
         rightfoot.position.x = 8
         addChild(rightfoot)
-        
+    }
+    
+    func loadPhysicsBodyWithSize(size: CGSize){
+        physicsBody = SKPhysicsBody(rectangleOfSize: size)
+        //This says: When do you want the hero to register contact with an object
+        physicsBody?.categoryBitMask = heroCatagory
+        physicsBody?.contactTestBitMask = wallCatagory
+        physicsBody?.affectedByGravity = false
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -120,6 +134,8 @@ class MFHero:SKSpriteNode{
     
     func stop(){
         body.removeAllActions()
+        leftfoot.removeAllActions()
+        rightfoot.removeAllActions()
     }
     
 }

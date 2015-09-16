@@ -10,14 +10,23 @@ import Foundation
 import SpriteKit
 
 class MFWall: SKSpriteNode {
-    
     let WALL_WIDTH: CGFloat = 30.0
     let WALL_HEIGHT: CGFloat = 50.0
     let WALL_COLOR = UIColor.blackColor()
     
     init(){
-        super.init(texture: nil, color: WALL_COLOR, size: CGSizeMake(WALL_WIDTH, WALL_HEIGHT))
+        let size = CGSizeMake(WALL_WIDTH, WALL_HEIGHT)
+        super.init(texture: nil, color: WALL_COLOR, size: size)
+        loadPhysicsBodyWithSize(size)
         startMoving()
+        
+    }
+    
+    func loadPhysicsBodyWithSize(size: CGSize)
+    {
+        physicsBody = SKPhysicsBody(rectangleOfSize: size)
+        physicsBody?.categoryBitMask = wallCatagory
+        physicsBody?.affectedByGravity = false
     }
 
       required init?(coder aDecoder: NSCoder) {
@@ -29,4 +38,7 @@ class MFWall: SKSpriteNode {
         runAction(SKAction.repeatActionForever(moveLeft))
     }
     
+    func stopMoving(){
+        removeAllActions()
+    }
 }

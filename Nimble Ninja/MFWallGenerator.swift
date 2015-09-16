@@ -12,9 +12,14 @@ import SpriteKit
 class MFWallGenerator: SKSpriteNode{
     
     var generationTimer: NSTimer!
+    var walls = [MFWall]()
     
     func startGeneratingWallsEvery(seconds: NSTimeInterval){
         generationTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: "generateWall", userInfo: nil, repeats: true)
+    }
+    
+    func stopGenerating(){
+        generationTimer?.invalidate()
     }
     
     func generateWall(){
@@ -30,6 +35,14 @@ class MFWallGenerator: SKSpriteNode{
         wall.position.x = size.width/2 + wall.size.width/2
         wall.position.y = scale * (KMLGroundHeight/2 + wall.size.height/2)
         addChild(wall)
+        walls.append(wall)
+    }
+    
+    func stopWalls(){
+        stopGenerating()
+        for wall in walls{
+            wall.stopMoving()
+        }
     }
     
 }

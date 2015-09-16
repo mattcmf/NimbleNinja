@@ -39,4 +39,7 @@ class MFCloudGenerator: SKSpriteNode{
         addChild(cloud)
     }
     
+    func stopGenerating(){
+        generationTimer.invalidate()
+    }
 }
