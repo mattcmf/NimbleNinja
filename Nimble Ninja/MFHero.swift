@@ -88,6 +88,9 @@ class MFHero:SKSpriteNode{
     }
     
     func flip(){
+        //print(size.height)
+
+        
         isUpsideDown = !isUpsideDown
         
         var scale: CGFloat!
@@ -96,11 +99,25 @@ class MFHero:SKSpriteNode{
         }else{
             scale = 1.0
         }
-        let translate = SKAction.moveByX(0, y: scale*(size.height + KMLGroundHeight), duration: 0.1)
-        let flip = SKAction.scaleYTo(scale, duration: 0.1)
         
-        runAction(translate)
+        //let translate = SKAction.moveByX(0, y: scale*(size.height + KMLGroundHeight), duration:0.1)
+        let translate = SKAction.moveByX(0, y: scale*(44 + KMLGroundHeight), duration: 0.1)
+        let flip = SKAction.scaleYTo(scale, duration: 0)
+        
+        //print(size.height)
+        
         runAction(flip)
+        runAction(translate)
+        
+        //print(size.height)
+    }
+    
+    func fall(){
+        physicsBody?.affectedByGravity = true
+        physicsBody?.applyImpulse(CGVectorMake(-5, 30))
+        
+        let rotateBack = SKAction.rotateByAngle(CGFloat(M_PI) / 2, duration: 0.4)
+        runAction(rotateBack)
     }
     
     func startRunning(){

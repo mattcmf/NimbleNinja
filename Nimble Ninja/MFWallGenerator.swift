@@ -13,6 +13,8 @@ class MFWallGenerator: SKSpriteNode{
     
     var generationTimer: NSTimer!
     var walls = [MFWall]()
+    var wallTrackers = [MFWall]()
+    
     
     func startGeneratingWallsEvery(seconds: NSTimeInterval){
         generationTimer = NSTimer.scheduledTimerWithTimeInterval(seconds, target: self, selector: "generateWall", userInfo: nil, repeats: true)
@@ -34,8 +36,10 @@ class MFWallGenerator: SKSpriteNode{
         let wall = MFWall()
         wall.position.x = size.width/2 + wall.size.width/2
         wall.position.y = scale * (KMLGroundHeight/2 + wall.size.height/2)
-        addChild(wall)
         walls.append(wall)
+        wallTrackers.append(wall)
+        addChild(wall)
+
     }
     
     func stopWalls(){

@@ -18,44 +18,88 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isStarted = false
     var isGameOver = false
     
+    var currentLevel = 0
+    
     override func didMoveToView(view: SKView) {
         backgroundColor = UIColor(red: 159.0/255.0, green: 201.0/255.0, blue: 244.0/255.0, alpha: 1.0)
         
-        //Add Ground
-        movingGround = MFMovingGround(size: CGSizeMake(view.frame.width, KMLGroundHeight))
-        movingGround.position = CGPointMake(0, view.frame.size.height/2)
+        addMovingGround()
+        addHero()
+        addCloudGenerator()
+        addWallGenerator()
+        addTapToStartLabel()
+        addPhysicalWorld()
+        addPointsLabels()
+        loadHighScore()
+    }
+    
+    func addMovingGround(){
+        movingGround = MFMovingGround(size: CGSizeMake(view!.frame.width, KMLGroundHeight))
+        movingGround.position = CGPointMake(0, view!.frame.size.height/2)
         addChild(movingGround)
-        
-        //Add Hero
+    }
+    
+    func addHero(){
         hero = MFHero()
         hero.position = CGPointMake(70,movingGround.position.y + movingGround.frame.size.height/2 + hero.frame.size.height/2)
         addChild(hero)
         hero.breath()
-        
-        //Add Cloud Generator
-        cloudGenerator = MFCloudGenerator(color: UIColor.clearColor(), size: view.frame.size)
-        cloudGenerator.position = view.center
+    }
+    
+    func addCloudGenerator(){
+        cloudGenerator = MFCloudGenerator(color: UIColor.clearColor(), size: view!.frame.size)
+        cloudGenerator.position = view!.center
         addChild(cloudGenerator)
         cloudGenerator.populate(7)
         cloudGenerator.startGeneratingWithSpawnTime(5)
-        
-        //Add Wall
-        wallGenerator = MFWallGenerator(color: UIColor.clearColor(), size: view.frame.size)
-        wallGenerator.position = view.center
-        
-        //Add Start Label
+    }
+    
+    func addWallGenerator(){
+        wallGenerator = MFWallGenerator(color: UIColor.clearColor(), size: view!.frame.size)
+        wallGenerator.position = view!.center
+    }
+    
+    func addTapToStartLabel(){
         let tapToStartLabel = SKLabelNode(text: "Tap to start!")
         tapToStartLabel.name = "tapToStartLabel"
-        tapToStartLabel.position.x = view.center.x
-        tapToStartLabel.position.y = view.center.y + 40
+        tapToStartLabel.position.x = view!.center.x
+        tapToStartLabel.position.y = view!.center.y + 40
         tapToStartLabel.fontName = "Helvitica"
         tapToStartLabel.fontColor = UIColor.blackColor()
-        tapToStartLabel.fontSize = 22.0
+        tapToStartLabel.fontSize = 28.0
         addChild(tapToStartLabel)
+        tapToStartLabel.runAction(blinkAnimation())
+    }
+    
+    func addPointsLabels(){
+        let pointsLabel = MFPointsLabel(num: 0)
+        pointsLabel.position = CGPointMake(20.0, (view?.frame.size.height)! - 35)
+        pointsLabel.name = "PointsLabel"
+        addChild(pointsLabel)
         
-        //Add physics world
-        //Delegate = promise of a certain class that will implement certain methods
+        let highScoreLabel = MFPointsLabel(num: 0)
+        highScoreLabel.position = CGPointMake(view!.frame.size.width - 35, view!.frame.size.height - 35)
+        highScoreLabel.name = "HighScoreLabel"
+        addChild(highScoreLabel)
+        
+        let highScoreTextLabel = SKLabelNode(text: "Highscore")
+        highScoreTextLabel.fontColor = UIColor.blackColor()
+        highScoreTextLabel.fontSize = 14
+        highScoreTextLabel.fontName = "Helvitica"
+        highScoreTextLabel.position = CGPointMake(0, -30)
+        highScoreLabel.addChild(highScoreTextLabel)
+    }
+    
+    func addPhysicalWorld(){
         physicsWorld.contactDelegate = self
+    }
+    
+    func loadHighScore(){
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        let highScoreLabel = childNodeWithName("HighScoreLabel") as! MFPointsLabel
+        
+        highScoreLabel.setTo(defaults.integerForKey("highscore"))
     }
     
     //MARK: - Game Lifecycle
@@ -75,7 +119,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func gameOver(){
         //stop everything
         isGameOver = true
-        hero.physicsBody = nil 
+        hero.fall()
         wallGenerator.stopWalls()
         movingGround.stop()
         hero.stop()
@@ -86,11 +130,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverLabel.fontName = "Helvetica"
         gameOverLabel.position.x = view!.center.x
         gameOverLabel.position.y = view!.center.y + 40
-        gameOverLabel.fontSize = 22.0
+        gameOverLabel.fontSize = 28.0
         addChild(gameOverLabel)
+        gameOverLabel.runAction(blinkAnimation())
+        
+        //save current points label value
+        let pointsLabel = childNodeWithName("PointsLabel") as! MFPointsLabel
+        let highScoreLabel = childNodeWithName("HighScoreLabel") as! MFPointsLabel
+        
+        if highScoreLabel.number < pointsLabel.number{
+            highScoreLabel.setTo(pointsLabel.number)
+            
+            let defaults = NSUserDefaults.standardUserDefaults()
+            defaults.setInteger(highScoreLabel.number, forKey: "highscore")
+        }
     }
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if isGameOver{
             restart()
         }
@@ -111,11 +168,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        if wallGenerator.wallTrackers.count > 0 {
+            let wall = wallGenerator.wallTrackers[0] as MFWall
+            
+            let wallLocation = wallGenerator.convertPoint(wall.position, toNode: self)
+            if wallLocation.x < hero.position.x{
+                wallGenerator.wallTrackers.removeAtIndex(0)
+                
+                let pointsLabel = childNodeWithName("PointsLabel") as! MFPointsLabel
+                pointsLabel.increment()
+                
+                if (pointsLabel.number % kNumberOfPointsPerLevel == 0) && (currentLevel < kLevelGenerationTimes.count-1) {
+                    currentLevel++
+                    wallGenerator.stopGenerating()
+                    wallGenerator.startGeneratingWallsEvery(kLevelGenerationTimes[currentLevel])
+                }
+                
+                //Increase speed
+                //kDefaultXToMovePerSecond + 25
+                //print ("Speed = ", kDefaultXToMovePerSecond)
+            }
+        }
     }
     
     //MARK: - SK physics SK delegate
     func didBeginContact(contact: SKPhysicsContact) {
-        gameOver()
-        println("did begin contact caller")
+        if !isGameOver{
+            gameOver()
+        }
+        print("did begin contact caller")
+    }
+    
+    //MARK: - Animations
+    func blinkAnimation() -> SKAction{
+        let duration = 0.4
+        let fadeOut = SKAction.fadeAlphaTo(0.0, duration: duration)
+        let fadeIn =  SKAction.fadeAlphaTo(1.0, duration: duration)
+        let blink = SKAction.sequence([fadeIn,fadeOut])
+        return SKAction.repeatActionForever(blink)
+        
     }
 }

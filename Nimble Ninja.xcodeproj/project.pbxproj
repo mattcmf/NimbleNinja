@@ -22,6 +22,7 @@
 		D48B68BF1B964B2A000291F3 /* MFMovingGround.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B68BE1B964B2A000291F3 /* MFMovingGround.swift */; };
 		D48B68C11B965431000291F3 /* MFHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48B68C01B965431000291F3 /* MFHero.swift */; };
 		D4CF680A1B98E43C00FFE32E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4CF68091B98E43C00FFE32E /* Constants.swift */; };
+		D4FF31F71BCD8AF2007FBC1C /* MFPointsLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FF31F61BCD8AF2007FBC1C /* MFPointsLabel.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		D48B68BE1B964B2A000291F3 /* MFMovingGround.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MFMovingGround.swift; sourceTree = "<group>"; };
 		D48B68C01B965431000291F3 /* MFHero.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MFHero.swift; sourceTree = "<group>"; };
 		D4CF68091B98E43C00FFE32E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		D4FF31F61BCD8AF2007FBC1C /* MFPointsLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MFPointsLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,6 +97,7 @@
 		D48B688C1B96452F000291F3 = {
 			isa = PBXGroup;
 			children = (
+				D4FF31F81BCD8B10007FBC1C /* Labels */,
 				D48B68971B96452F000291F3 /* Nimble Ninja */,
 				D48B68B11B96452F000291F3 /* Nimble NinjaTests */,
 				D48B68961B96452F000291F3 /* Products */,
@@ -155,6 +158,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D4FF31F81BCD8B10007FBC1C /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				D4FF31F61BCD8AF2007FBC1C /* MFPointsLabel.swift */,
+			);
+			name = Labels;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -199,11 +210,13 @@
 		D48B688D1B96452F000291F3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = theswiftproject;
 				TargetAttributes = {
 					D48B68941B96452F000291F3 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = H4F9VKL486;
 					};
 					D48B68AD1B96452F000291F3 = {
 						CreatedOnToolsVersion = 6.4;
@@ -256,6 +269,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4FF31F71BCD8AF2007FBC1C /* MFPointsLabel.swift in Sources */,
 				D48B689F1B96452F000291F3 /* GameScene.swift in Sources */,
 				D48B68BF1B964B2A000291F3 /* MFMovingGround.swift in Sources */,
 				D42248E61B9A123000757912 /* MFCloud.swift in Sources */,
@@ -392,9 +406,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Nimble Ninja/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -402,9 +419,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Nimble Ninja/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
